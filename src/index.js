@@ -1,154 +1,85 @@
-const container = document.querySelector('.container');
-const search = document.querySelector('.search-box button');
-const weatherBox = document.querySelector('.weather-box');
-const weatherDetails = document.querySelector('.weather-details');
-const error404 = document.querySelector('.not-found');
+import { fetchWeather } from './weather-fetch';
 
-search.addEventListener('click', () => {
-  const APIKey = 'adc22cb86b5155101885c27cb80b8205';
-  const city = document.querySelector('.search-box input').value;
+const refs = {
+  container: document.querySelector('.container'),
+  search: document.querySelector('.search-box button'),
+  weatherBox: document.querySelector('.weather-box'),
+  weatherDetails: document.querySelector('.weather-details'),
+  error404: document.querySelector('.not-found'),
+  input: document.querySelector('.search-box_input'),
+
+  image: document.querySelector('.weather-img'),
+  temperature: document.querySelector('.temperature'),
+  description: document.querySelector('.description'),
+  humidity: document.querySelector('.humidity-span'),
+  wind: document.querySelector('.wind-span'),
+};
+
+refs.search.addEventListener('click', mainFunc);
+
+async function mainFunc() {
+  const city = refs.input.value;
 
   if (city === '') return;
 
-  fetch(
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`
-  )
-    .then(response => response.json())
-    .then(json => {
-      if (json.cod === '404') {
-        container.style.height = '400px';
-        weatherBox.style.display = 'none';
-        weatherDetails.style.display = 'none';
-        error404.style.display = 'block';
-        error404.classList.add('fadeIn');
-        return;
-      }
+  try {
+    response = await fetchWeather(city);
+    weather(response);
+  } catch (error) {
+    console.log(error);
+    err(error.response.data.cod);
+  }
+}
 
-      error404.style.display = 'none';
-      error404.classList.remove('fadeIn');
+const err = error => {
+  console.log(error);
+  if (error === '404') {
+    refs.container.style.height = '450px';
+    refs.weatherBox.style.display = 'none';
+    refs.weatherDetails.style.display = 'none';
+    refs.error404.style.display = 'block';
+    refs.error404.classList.add('fadeIn');
+    return;
+  }
+};
 
-      const image = document.querySelector('.weather-img');
-      const temperature = document.querySelector('.weather-box .temperature');
-      const description = document.querySelector('.weather-box .description');
-      const humidity = document.querySelector(
-        '.weather-details .humidity span'
-      );
-      const wind = document.querySelector('.weather-details .wind span');
+const weather = response => {
+  refs.error404.style.display = 'none';
+  refs.error404.classList.remove('fadeIn');
 
-      console.log(json.weather[0].main);
+  // switch (response.data.weather[0].main) {
+  //   case 'Clear':
+  //     image.src = '../images/clear.png';
+  //     break;
 
-      switch (json.weather[0].main) {
-        case 'Clear':
-          image.src = '../images/clear.png';
-          break;
+  //   case 'Rain':
+  //     image.src = '../images/rain.png';
+  //     break;
 
-        case 'Rain':
-          image.src = '../images/rain.png';
-          break;
+  //   case 'Snow':
+  //     image.src = '../images/snow.png';
+  //     break;
 
-        case 'Snow':
-          image.src = './images/snow.png';
-          break;
+  //   case 'Clouds':
+  //     image.src = [imageCloud];
+  //     break;
 
-        case 'Clouds':
-          image.src = './src/images/cloud.png';
-          break;
+  //   case 'Haze':
+  //     image.src = '../images/mist.png';
+  //     break;
 
-        case 'Haze':
-          image.src = '../images/mist.png';
-          break;
+  //   default:
+  //     image.src = '';
+  // }
 
-        default:
-          image.src = '';
-      }
+  refs.temperature.innerHTML = `${response.data.main.temp}<span>°C</span>`;
+  refs.description.innerHTML = `${response.data.weather[0].description}`;
+  refs.humidity.innerHTML = `${response.data.main.humidity}%`;
+  refs.wind.innerHTML = `${response.data.wind.speed}Km/h`;
 
-      temperature.innerHTML = `${parseInt(json.main.temp)}<span>°C</span>`;
-      description.innerHTML = `${json.weather[0].description}`;
-      humidity.innerHTML = `${json.main.humidity}%`;
-      wind.innerHTML = `${parseInt(json.wind.speed)}Km/h`;
-
-      weatherBox.style.display = '';
-      weatherDetails.style.display = '';
-      weatherBox.classList.add('fadeIn');
-      weatherDetails.classList.add('fadeIn');
-      container.style.height = '590px';
-    });
-});
-
-// const container = document.querySelector('.container');
-// const search = document.querySelector('.search-box button');
-// const weatherBox = document.querySelector('.weather-box');
-// const weatherDetails = document.querySelector('.weather-details');
-// const error404 = document.querySelector('.not-found');
-
-// search.addEventListener('click', () => {
-//   const APIKEY = 'adc22cb86b5155101885c27cb80b8205';
-
-//   const city = document.querySelector('.search-box input').value;
-
-//   if (city === '') {
-//     return;
-//   }
-
-//   fetch(
-//     `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKEY}`
-//   )
-//     .then(response => response.json())
-//     .then(json => {
-//       if (json.code === '404') {
-//         container.style.height = '400px';
-//         weatherBox.style.display = 'none';
-//         weatherDetails.style.display = 'none';
-//         error404.style.display = 'block';
-//         error404.classList.add('fadeIn');
-//         return;
-//       }
-
-//       error404.style.display = 'none';
-//       error404.classList.remove('fadeIn');
-
-//       const image = document.querySelector('.weather-box img');
-//       const temperature = document.querySelector('.weather-box .temperature');
-//       const description = document.querySelector('.weather-box .description');
-//       const humidity = document.querySelector(
-//         '.weather-details .humidity span'
-//       );
-//       const wind = document.querySelector('.weather-details .wind span');
-
-//       switch (json.weather[0].main) {
-//         case 'Clear':
-//           image.src = './images/clear.png';
-//           break;
-
-//         case 'Rain':
-//           image.src = './images/rain.png';
-//           break;
-
-//         case 'Snow':
-//           image.src = './images/snow.png';
-//           break;
-
-//         case 'Clouds':
-//           image.src = './images/cloud.png';
-//           break;
-
-//         case 'Haze':
-//           image.src = './images/mist.png';
-//           break;
-
-//         default:
-//           image.src = '';
-//       }
-
-//       temperature.innerHTML = `${parseInt(json.main.temp)}<span>°C</span>`;
-//       description.innerHTML = `${json.weather[0].description}`;
-//       humidity.innerHTML = `${json.main.humidity}%`;
-//       wind.innerHTML = `${parseInt(json.wind.speed)}Km/h`;
-
-//       weatherBox.style.display = '';
-//       weatherDetails.style.display = '';
-//       weatherBox.classList.add('fadeIn');
-//       weatherDetails.classList.add('fadeIn');
-//       container.style.height = '590px';
-//     });
-// });
+  refs.weatherBox.style.display = '';
+  refs.weatherDetails.style.display = '';
+  refs.weatherBox.classList.add('fadeIn');
+  refs.weatherDetails.classList.add('fadeIn');
+  refs.container.style.height = '590px';
+};

@@ -33,12 +33,11 @@ async function mainFunc() {
     weather(response);
   } catch (error) {
     console.log(error);
-    err(error.response.data.cod);
+    // err(error.response.data.cod);
   }
 }
 
 const err = error => {
-  console.log(error);
   if (error === '404') {
     refs.container.style.height = '450px';
     refs.weatherBox.style.display = 'none';

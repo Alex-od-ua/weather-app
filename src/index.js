@@ -1,5 +1,11 @@
 import { fetchWeather } from './weather-fetch';
 
+import clearImg from './images/clear.png';
+import rainImg from './images/rain.png';
+import snowImg from './images/snowing.png';
+import cloudImg from './images/cloud.png';
+import hazeImg from './images/mist.png';
+
 const refs = {
   container: document.querySelector('.container'),
   search: document.querySelector('.search-box button'),
@@ -47,30 +53,32 @@ const weather = response => {
   refs.error404.style.display = 'none';
   refs.error404.classList.remove('fadeIn');
 
-  // switch (response.data.weather[0].main) {
-  //   case 'Clear':
-  //     image.src = '../images/clear.png';
-  //     break;
+  console.log(response.data.weather[0].main);
 
-  //   case 'Rain':
-  //     image.src = '../images/rain.png';
-  //     break;
+  switch (response.data.weather[0].main) {
+    case 'Clear':
+      refs.image.src = clearImg;
+      break;
 
-  //   case 'Snow':
-  //     image.src = '../images/snow.png';
-  //     break;
+    case 'Rain':
+      refs.image.src = rainImg;
+      break;
 
-  //   case 'Clouds':
-  //     image.src = [imageCloud];
-  //     break;
+    case 'Snow':
+      refs.image.src = snowImg;
+      break;
 
-  //   case 'Haze':
-  //     image.src = '../images/mist.png';
-  //     break;
+    case 'Clouds':
+      refs.image.src = cloudImg;
+      break;
 
-  //   default:
-  //     image.src = '';
-  // }
+    case 'Haze':
+      refs.image.src = hazeImg;
+      break;
+
+    default:
+      image.src = '';
+  }
 
   refs.temperature.innerHTML = `${response.data.main.temp}<span>°C</span>`;
   refs.description.innerHTML = `${response.data.weather[0].description}`;

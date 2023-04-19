@@ -29,7 +29,7 @@ async function mainFunc() {
   if (city === '') return;
 
   try {
-    response = await fetchWeather(city);
+    const response = await fetchWeather(city);
     weather(response);
   } catch (error) {
     console.log(error);

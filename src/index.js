@@ -76,7 +76,7 @@ const weather = response => {
       break;
 
     default:
-      image.src = '';
+      refs.image.src = '';
   }
 
   refs.temperature.innerHTML = `${response.data.main.temp}<span>°C</span>`;
